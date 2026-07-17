@@ -5,7 +5,7 @@
 <h1 align="center">Spaniel</h1>
 
 <p align="center">
-  <em>Pseudo-objects and interfaces in Typst — nominal types, contracts, and multiple dispatch.</em>
+  <em>Pseudo-objects, interfaces, and generics in Typst — nominal types, contracts, and multiple dispatch.</em>
 </p>
 
 Spaniel lets Typst library authors define **typed objects that obey contracts** and
