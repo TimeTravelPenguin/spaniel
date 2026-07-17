@@ -97,18 +97,18 @@ Spaniel provides five ingredients that together deliver contracts and multiple d
 ## A minimal example
 
 ```typ
-#import "@preview/spaniel:0.0.1": *
-
 // 1. Runtime types with contracts — validated whenever you build a value.
 #let Num = nominal_type(
   "demo/Num",                       // "demo/Num" is the types' namespace.
   name: "Num",                      // You can replace "demo" with your project name.
-  validate: v => type(v) == int
+  validate: v => type(v) == int,
 )
 #let Vec = nominal_type(
   "demo/Vec",
   name: "Vec",
-  validate: v => type(v) == array and v.all(x => type(x) == int),
+  validate: v => (
+    type(v) == array and v.all(x => type(x) == int)
+  ),
 )
 
 #let num(n) = object(Num, n)
@@ -119,11 +119,15 @@ Spaniel provides five ingredients that together deliver contracts and multiple d
 
 // 3. ...with two implementations, chosen by argument type.
 #let scale-num = implementation(
-  Scale, (Num, Num), Num,
+  Scale,
+  (Num, Num),
+  Num,
   (ctx, a, b) => num(a.value * b.value),
 )
 #let scale-vec = implementation(
-  Scale, (Num, Vec), Vec,
+  Scale,
+  (Num, Vec),
+  Vec,
   (ctx, k, xs) => vec(xs.value.map(x => x * k.value)),
 )
 
@@ -156,8 +160,6 @@ dispatch, and `U` — discovered from the required operation's output — become
 type of the result.
 
 ```typ
-#import "@preview/spaniel:0.1.0": *
-
 // A scalar type, and a parametric `Vector[T]` whose contract is recursive:
 // every element must itself be a valid `T`.
 #let Int = nominal_type(
@@ -172,8 +174,7 @@ type of the result.
   1,
   name: "Vector",
   validate: (args, v) => (
-    type(v) == array
-      and v.all(x => payload_valid(args.first(), x))
+    type(v) == array and v.all(x => payload_valid(args.first(), x))
   ),
 )
 #let vector-of = t => apply_type(Vector, t)
@@ -183,7 +184,9 @@ type of the result.
 
 // The concrete base case: Int × Int -> Int.
 #let mul-int = implementation(
-  Mul, (Int, Int), Int,
+  Mul,
+  (Int, Int),
+  Int,
   (ctx, a, b) => int(a.value * b.value),
 )
 
@@ -194,15 +197,17 @@ type of the result.
 
 // The generic case: S × Vector[T] -> Vector[U], provided S × T -> U exists.
 #let mul-scalar-vec = implementation(
-  Mul, (S, vector-of(T)), vector-of(U),
+  Mul,
+  (S, vector-of(T)),
+  vector-of(U),
   (ctx, k, xs) => vec(
     // `ctx.bindings` holds T and U, resolved for this call; `ctx.dispatch`
     // re-enters the world to satisfy the requirement element-by-element.
     ctx.bindings.at("U"),
     xs.value.map(x => {
-        let dispatch = ctx.dispatch
-        let obj = object(ctx.bindings.at("T"), x)
-        dispatch(Mul, k, obj).value
+      let dispatch = ctx.dispatch
+      let obj = object(ctx.bindings.at("T"), x)
+      dispatch(Mul, k, obj).value
     }),
   ),
   constraints: (requires(Mul, (S, T), output: U),),
