@@ -5,7 +5,7 @@ compiler = "0.14.0"
 entrypoint = "src/lib.typ"
 authors = ["TimeTravelPenguin <@TimeTravelPenguin>"]
 license = "MIT"
-description = "Pseudo-objects and interfaces in Typst"
+description = "Pseudo-objects, interfaces, and generics in Typst"
 repository = "https://github.com/TimeTravelPenguin/spaniel"
 keywords = [
   "generic programming",
