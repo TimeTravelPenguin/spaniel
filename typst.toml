@@ -1,13 +1,19 @@
 [package]
 name = "spaniel"
-version = "0.1.0"
+version = "0.0.1"
 compiler = "0.14.0"
 entrypoint = "src/lib.typ"
 authors = ["TimeTravelPenguin <@TimeTravelPenguin>"]
 license = "MIT"
 description = "Pseudo-objects and interfaces in Typst"
 repository = "https://github.com/TimeTravelPenguin/spaniel"
-keywords = ["generic programming", "interfaces", "objects", "classes", "inheritance"]
+keywords = [
+  "generic programming",
+  "interfaces",
+  "objects",
+  "classes",
+  "inheritance",
+]
 categories = ["integration", "scripting"]
 
 # Tytanic test runner. `ppi` must match `PPI` in `tests/lib.typ` so that 32px
