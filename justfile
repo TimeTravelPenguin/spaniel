@@ -23,7 +23,9 @@ examples:
 manual *args:
     typst c --root . manual/manual.typ --input version="{{VER}}" {{ args }}
 
-bundle: assets
+build: assets manual examples
+
+bundle: build
     rm -rf dist
     mkdir -p "{{ DIST_DIR }}/src"
 
@@ -33,12 +35,13 @@ bundle: assets
     cp typst.toml "{{ DIST_DIR }}"
 
 [macos]
-install-dist: bundle
+install-dist: clean bundle
     rm -rf "{{ LOCAL_PACKAGES_MACOS }}/spaniel"
     mkdir -p "{{ LOCAL_PACKAGES_MACOS }}/spaniel"
     cp -r "{{ DIST_DIR }}" "{{ LOCAL_PACKAGES_MACOS }}/spaniel"
 
 clean:
     rm -f examples/*.png
+    rm -rf dist
 
 
