@@ -277,4 +277,4 @@ follows:
 
 ## License
 
-Spaniel is distributed under the [MIT License](LICENSE).
+Spaniel's source code is distributed under the [MIT License](LICENSE).
