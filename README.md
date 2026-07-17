@@ -147,8 +147,17 @@ internal architecture — lives in **[the manual](manual/manual.pdf)**, generate
 
 ## Installation
 
-Spaniel targets the Typst Universe, where it will be importable as
-`@preview/spaniel:0.0.1` (as in the example above).
+Spaniel is currently in development. Once `v0.1.0` is reached, it will be published to the
+Typst Universe. Until then you must manually install the package.
+
+Once you have cloned the repository, you can use `just` to bundle the package:
+
+```bash
+just bundle
+```
+
+If you are on macOS, you can use `just install-dist` to automatically copy the bundle to
+your `@local` typst packages. On all other platforms, you must copy it there manually.
 
 ## Acknowledgment of AI Usage
 
