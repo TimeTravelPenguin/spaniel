@@ -43,7 +43,10 @@ and nothing distinguishes a real object from any dictionary that happens to have
 shape:
 
 ```typ
-#assert.eq(type(complex(1, 2)), type(vector((1, 2))))  // true — both are `dictionary`
+#assert.eq(
+  type(complex(1, 2)),
+  type(vector((1, 2))),
+) // true — both are `dictionary`
 ```
 
 Nothing stops a caller from passing a malformed value, either. A missing or wrongly-typed
