@@ -139,6 +139,86 @@ Spaniel provides five ingredients that together deliver contracts and multiple d
 references to undeclared operations, and unbound type variables — so configuration
 mistakes are caught once, not on every call.
 
+## Generics: one implementation, many types
+
+The real payoff is _generic_ implementations. Instead of a separate case for every element
+type, you write **one** implementation over **type variables** and constrain it with
+`requires`.
+
+Below, `Vector` is a parametric type built with `type_constructor`, and a single generic
+implementation multiplies a scalar `S` by a `Vector[T]` — _provided_ the world can already
+multiply `S` by `T` (yielding some `U`). That requirement is resolved recursively during
+dispatch, and `U` — discovered from the required operation's output — becomes the element
+type of the result.
+
+```typ
+#import "@preview/spaniel:0.1.0": *
+
+// A scalar type, and a parametric `Vector[T]` whose contract is recursive:
+// every element must itself be a valid `T`.
+#let Int = nominal_type(
+  "demo/Int",
+  name: "Int",
+  validate: v => type(v) == int,
+)
+#let integer = v => object(Int, v)
+
+#let Vector = type_constructor(
+  "demo/Vector",
+  1,
+  name: "Vector",
+  validate: (args, v) => (
+    type(v) == array
+      and v.all(x => payload_valid(args.first(), x))
+  ),
+)
+#let vector-of = t => apply_type(Vector, t)
+#let vec = (t, xs) => object(vector-of(t), xs)
+
+#let Mul = operation("demo/Mul", 2, name: "mul")
+
+// The concrete base case: Int × Int -> Int.
+#let mul-int = implementation(
+  Mul, (Int, Int), Int,
+  (ctx, a, b) => int(a.value * b.value),
+)
+
+// Type variables for the generic case.
+#let S = type_variable("S")
+#let T = type_variable("T")
+#let U = type_variable("U")
+
+// The generic case: S × Vector[T] -> Vector[U], provided S × T -> U exists.
+#let mul-scalar-vec = implementation(
+  Mul, (S, vector-of(T)), vector-of(U),
+  (ctx, k, xs) => vec(
+    // `ctx.bindings` holds T and U, resolved for this call; `ctx.dispatch`
+    // re-enters the world to satisfy the requirement element-by-element.
+    ctx.bindings.at("U"),
+    xs.value.map(x => {
+        let dispatch = ctx.dispatch
+        let obj = object(ctx.bindings.at("T"), x)
+        dispatch(Mul, k, obj).value
+    }),
+  ),
+  constraints: (requires(Mul, (S, T), output: U),),
+)
+
+#let world = build_world(extension(
+  operations: (Mul,),
+  implementations: (mul-int, mul-scalar-vec),
+))
+#let mul = dispatcher(world, Mul)
+
+#mul(integer(6), integer(7)).value           // 42          — base case
+#mul(integer(2), vec(Int, (1, 2, 3))).value  // (2, 4, 6)   — generic case
+```
+
+The generic implementation never mentions `Int`. Add a new scalar type with its own `Mul`
+implementation and `mul` scales vectors of it too — with no change to `mul-scalar-vec`.
+Because dispatch is open, that new type and its implementation can even live in a
+_different_ package.
+
 ## Documentation
 
 The full API — including generic implementations, requirement constraints, and the
