@@ -278,3 +278,10 @@ follows:
 ## License
 
 Spaniel's source code is distributed under the [MIT License](LICENSE).
+
+## Additional Credits
+
+Logo was illustrated by `@engmoustly` ([insta]) ([fiverr])
+
+[insta]: https://www.instagram.com/engmoustly
+[fiverr]: https://www.fiverr.com/engmoustly
