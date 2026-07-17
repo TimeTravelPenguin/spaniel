@@ -13,6 +13,10 @@ Spaniel lets Typst library authors define **typed objects that obey contracts** 
 you the interfaces, ad-hoc polymorphism, and _open_ extensibility that Typst's scripting
 layer does not provide on its own — enforced at the API level rather than by convention.
 
+> [!IMPORTANT]
+> Please note that this package is a work in progress. It takes time to fully scope out
+> feature requirements, test designs, review, and build up something I am happy with.
+
 ## Why?
 
 While Typst is incredibly powerful on its own, it is dynamically typed and does not
