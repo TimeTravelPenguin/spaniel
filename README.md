@@ -275,6 +275,11 @@ follows:
    used to put together the user manual (mostly), and also to expand the examples of this
    readme.
 
+## About the name
+
+Spaniel is named after my dog's breed - a Cocker Spaniel. She doesn't like it when I am at
+my computer, much like how Typst dislikes static types. Neither of us are allowed to type.
+
 ## License
 
 Spaniel's source code is distributed under the [MIT License](LICENSE).
