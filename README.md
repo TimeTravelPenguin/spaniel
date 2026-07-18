@@ -323,6 +323,20 @@ error: assertion failed: invalid payload for Array[UInt]: (1, -2, 3)
     unsigned_array((1, -2, 3))
 ```
 
+## Additional Examples
+
+Be sure to look into the [examples](./examples/) directory for some more advanced uses of
+the library. I will admit that this package is more capable that I originally invisioned,
+due to some additions and suggestions by AI to my original implementation! I plan to
+continue probing AI to use `spaniel` as development continues, because it is a surprising
+way to explore what is and isn't currently possible!
+
+Below are the current examples:
+
+- [`ToString` and `Into<String>`](./examples/into_trait.typ): While still limited, it is
+  surprising that this is currently possible, as it was _not_ something I had
+  initially considered as a feature. A very happy accident!
+
 ## Documentation
 
 The full API — including generic implementations, requirement constraints, and the

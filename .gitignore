@@ -37,3 +37,4 @@ packages
 /*.md
 !README.md
 .claude
+examples/*.pdf
