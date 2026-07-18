@@ -5,6 +5,10 @@
 /// registration, and the dispatcher. Internal helpers (underscore-prefixed)
 /// stay private to their modules.
 
+#import "types/builtin.typ": (
+  Array, Bool, Float, Int, Number, String, UInt, array_of, boolean, floating,
+  integer, number, string, unsigned_integer,
+)
 #import "types.typ": (
   apply_type, display_type, nominal_type, substitute_type, type_constructor,
   type_equal, type_key, type_variable,
