@@ -65,4 +65,6 @@
 #let unsigned_integer(value) = object(UInt, value)
 #let floating(value) = object(Float, value)
 #let number(value) = object(Number, value)
+#let boolean(value) = object(Bool, value)
+#let string(value) = object(String, value)
 #let array_of(element_type) = apply_type(Array, element_type)
