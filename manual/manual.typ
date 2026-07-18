@@ -36,15 +36,16 @@
 
 // Render a parsed module: an optional description followed by its definitions.
 #let render-module(module, private: false) = {
-  let functions = if private {
-    module.functions.filter(fn => fn.name.starts-with("_"))
-  } else {
-    module.functions
-  }
+  let keep = def => not private or def.name.starts-with("_")
+  let functions = module.functions.filter(keep)
+  let variables = module.variables.filter(keep)
 
-  let show-description = (
-    not private or functions.all(fn => fn.name.starts-with("_"))
-  )
+  // Show the module description in the public pass, and in the internal pass
+  // only for modules that are entirely private (so it is not repeated).
+  let all-private = (module.functions + module.variables).all(def => (
+    def.name.starts-with("_")
+  ))
+  let show-description = not private or all-private
 
   if (
     show-description
@@ -56,7 +57,7 @@
   }
 
   tidy.show-module(
-    (..module, functions: functions),
+    (..module, functions: functions, variables: variables),
     first-heading-level: 2,
     show-module-name: false,
     show-outline: false,
@@ -71,6 +72,7 @@
   ("operations", "Operations & implementations"),
   ("registry", "Extensions & worlds"),
   ("dispatch", "Dispatch"),
+  ("types/builtin", "Builtin types"),
 )
 
 // Every module that contains internal (underscore-prefixed) definitions.
@@ -80,6 +82,7 @@
   ("matching", "Pattern matching & specificity"),
   ("registry", "Registry internals"),
   ("dispatch", "Dispatch internals"),
+  ("types/builtin", "Builtin type internals"),
 )
 
 
@@ -109,8 +112,9 @@ Please note that this document contains examples that include undocumented funct
 variables. These exist only to support the examples and are not part of the public API.
 They are defined @example-scope, which describes the scope used when evaluating the examples.
 
-In brief, these terms are as follows: `Int`, `int`, `Vector`, `vector_of`, `vector`,
-`Mul`, `mul_int_int`, `S`, `T`, `U`, `mul_scalar_vector`, `algebra`, `world`, and `mul`.
+In brief, these terms are as follows: `vector`, `Mul`, `mul_int_int`, `S`, `T`, `U`,
+`mul_scalar_vector`, `algebra`, `world`, and `mul`. Examples otherwise use the natively
+documented `Int` type and the `Array[_]` constructor (`array_of`) from the builtin types.
 
 // -----------------------------------------------------------------------------
 // Public API

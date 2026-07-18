@@ -247,7 +247,7 @@
 /// Resolve an operation for concrete type descriptors without invoking it.
 ///
 /// ```example
-/// #display_type(try_resolve(world, Mul, (Int, vector_of(Int))).value.output)
+/// #display_type(try_resolve(world, Mul, (Int, array_of(Int))).value.output)
 /// ```
 ///
 /// -> dictionary
@@ -272,7 +272,7 @@
 /// Invoke an operation using multiple dispatch.
 ///
 /// ```example
-/// #repr(dispatch(world, Mul, int(2), vector(Int, (1, 2, 3))).value)
+/// #repr(dispatch(world, Mul, integer(2), vector(Int, (1, 2, 3))).value)
 /// ```
 ///
 /// -> dictionary
@@ -339,7 +339,7 @@
 ///
 /// ```example
 /// #let mul = dispatcher(world, Mul)
-/// #mul(int(6), int(7)).value
+/// #mul(integer(6), integer(7)).value
 /// ```
 ///
 /// -> function

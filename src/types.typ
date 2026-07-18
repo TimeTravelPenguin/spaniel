@@ -149,7 +149,7 @@
 /// Apply a type constructor to type arguments.
 ///
 /// ```example
-/// #display_type(apply_type(Vector, Int))
+/// #display_type(apply_type(Array, Int))
 /// ```
 ///
 /// -> dictionary
@@ -193,7 +193,7 @@
 /// Ignores validators and display names.
 ///
 /// ```example
-/// #repr((type_equal(Int, Int), type_equal(Int, vector_of(Int))))
+/// #repr((type_equal(Int, Int), type_equal(Int, array_of(Int))))
 /// ```
 ///
 /// -> bool
@@ -245,7 +245,7 @@
 /// Render a type expression as a human-readable string.
 ///
 /// ```example
-/// #display_type(vector_of(Int))
+/// #display_type(array_of(Int))
 /// ```
 ///
 /// -> str
@@ -283,7 +283,7 @@
 /// This intentionally ignores validators and display names.
 ///
 /// ```example
-/// #type_key(vector_of(Int))
+/// #type_key(array_of(Int))
 /// ```
 ///
 /// -> str
@@ -321,7 +321,7 @@
 /// variables or rigid variables.
 ///
 /// ```example
-/// #repr((_is_concrete_type(vector_of(Int)), _is_concrete_type(vector_of(T))))
+/// #repr((_is_concrete_type(array_of(Int)), _is_concrete_type(array_of(T))))
 /// ```
 ///
 /// -> bool
@@ -354,7 +354,7 @@
 /// Collect the names of all type variables occurring in `ty`.
 ///
 /// ```example
-/// #repr(_type_variables(apply_type(Vector, T)))
+/// #repr(_type_variables(apply_type(Array, T)))
 /// ```
 ///
 /// -> array
@@ -379,7 +379,7 @@
 /// Variables absent from `bindings` are left unchanged.
 ///
 /// ```example
-/// #display_type(substitute_type(vector_of(T), ("T": Int)))
+/// #display_type(substitute_type(array_of(T), ("T": Int)))
 /// ```
 ///
 /// -> dictionary

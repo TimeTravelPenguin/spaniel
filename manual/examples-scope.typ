@@ -1,29 +1,18 @@
 #import "/src/lib.typ": *
+#import "/src/types/builtin.typ": Int, array_of
 #import "/src/lib.typ" as m-lib
 #import "/src/internal.typ" as m-internal
 #import "/src/types.typ" as m-types
 #import "/src/matching.typ" as m-matching
 #import "/src/registry.typ" as m-registry
 #import "/src/dispatch.typ" as m-dispatch
+#import "/src/types/builtin.typ" as m-builtin
 
-#let Int = nominal_type(
-  "demo/Int",
-  name: "Int",
-  validate: value => type(value) == int,
-)
-#let integer = value => object(Int, value)
-
-#let Vector = type_constructor(
-  "demo/Vector",
-  1,
-  name: "Vector",
-  validate: (arguments, value) => (
-    type(value) == array
-      and value.all(element => payload_valid(arguments.first(), element))
-  ),
-)
-#let vector_of = element_type => apply_type(Vector, element_type)
-#let vector = (element_type, values) => object(vector_of(element_type), values)
+// `Int` and the `Array[_]` type (`array_of`) are provided natively by
+// `src/types/builtin.typ`, so the examples use those directly. The library has
+// no single-call constructor for a boxed array value, so this small helper
+// stays a fixture.
+#let vector = (element_type, values) => object(array_of(element_type), values)
 
 #let Mul = operation("demo/Mul.mul", 2, name: "mul")
 
@@ -41,8 +30,8 @@
 
 #let mul_scalar_vector = implementation(
   Mul,
-  (S, vector_of(T)),
-  vector_of(U),
+  (S, array_of(T)),
+  array_of(U),
   (ctx, lhs, rhs) => vector(
     ctx.bindings.at("U"),
     rhs.value.map(value => (
@@ -50,7 +39,7 @@
     )),
   ),
   constraints: (requires(Mul, (S, T), output: U),),
-  name: "S × Vector[T] -> Vector[U]",
+  name: "S × Array[T] -> Array[U]",
 )
 
 #let algebra = extension(
@@ -67,11 +56,8 @@
     + dictionary(m-matching)
     + dictionary(m-registry)
     + dictionary(m-dispatch)
+    + dictionary(m-builtin)
     + (
-      Int: Int,
-      int: integer,
-      Vector: Vector,
-      vector_of: vector_of,
       vector: vector,
       Mul: Mul,
       mul_int_int: mul_int_int,

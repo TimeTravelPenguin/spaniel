@@ -107,7 +107,7 @@
 /// type, threading one shared set of bindings across all positions.
 ///
 /// ```example
-/// #let b = _match_signature((S, vector_of(T)), (Int, vector_of(Int))).value
+/// #let b = _match_signature((S, array_of(T)), (Int, array_of(Int))).value
 /// #(display_type(b.at("S")) + ", " + display_type(b.at("T")))
 /// ```
 ///
@@ -148,7 +148,7 @@
 /// opaque while testing subsumption.
 ///
 /// ```example
-/// #display_type(_skolemize_type(vector_of(T), "impl"))
+/// #display_type(_skolemize_type(array_of(T), "impl"))
 /// ```
 ///
 /// -> dictionary
