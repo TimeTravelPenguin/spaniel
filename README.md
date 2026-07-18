@@ -1,5 +1,7 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/TimeTravelPenguin/spaniel/refs/heads/main/assets/spaniel.png" alt="project logo" width="300">
+  <img
+  src="https://raw.githubusercontent.com/TimeTravelPenguin/spaniel/refs/heads/main/assets/spaniel.png"
+  alt="project logo" width="300">
 </p>
 
 <h1 align="center">Spaniel</h1>
@@ -230,6 +232,96 @@ The generic implementation never mentions `Int`. Add a new scalar type with its 
 implementation and `mul` scales vectors of it too — with no change to `mul-scalar-vec`.
 Because dispatch is open, that new type and its implementation can even live in a
 _different_ package.
+
+## Errors where they matter
+
+A constant pain-point in much of programming is error handling. Oftentimes, it is enough
+to use assertions to evaluate the input arguments to your functions. The main problem is
+that it becomes very repetitive and tedious, introduces a large amount of boilerplate, and
+can easily be forgotton about or incorrectly used.
+
+One solution to this problem is to introduce errors as close as possible to the call site.
+Consider the following example from the spaniel source:
+
+```typ
+#import "../runtime.typ": object, payload_valid
+
+#let _namespace = "spaniel.types.builtin"
+
+#let UInt = nominal_type(
+  _namespace + "/UInt",
+  name: "UInt",
+  validate: value => type(value) == int and value >= 0,
+)
+
+#let unsigned_integer(value) = object(UInt, value)
+```
+
+Now, if we call `unsigned_integer(-1)`, we are presented with the error similar to:
+
+```
+error: assertion failed: invalid payload for UInt: -1
+   ┌─ src/runtime.typ:53:2
+   │
+53 │ ╭   assert(
+54 │ │     payload_valid(ty, value),
+55 │ │     message: "invalid payload for " + display_type(ty) + ": " + repr(value),
+56 │ │   )
+   │ ╰───^
+
+  while calling `object` at src/types/builtin.typ:65:31
+    object(UInt, value)
+  while calling `unsigned_integer` at demo.typ:3:1
+    unsigned_integer(-1)
+```
+
+We are immediately given the cause of the error! We can further demonstrate this with a
+slightly more complex type:
+
+```typ
+#let UnsignedArray = type_constructor(
+  _namespace + "/UnsignedArray",
+  1,                                    // constructor arity
+  name: "UnsignedArray",
+  validate: (arguments, value) => {
+    if type(value) != array {
+      return false
+    }
+
+    // note: spaniel automatically validates the arity
+    let element_type = arguments.first()
+
+    for element in value {
+      if not payload_valid(element_type, element) {
+        return false
+      }
+    }
+
+    true
+  },
+)
+
+#let unsigned_array(vals) = object(apply_type(Array, UInt), vals)
+#unsigned_array((1, -2, 3))
+```
+
+This time, we are told that `Array[UInt]` was unhappy with its provided argument!
+
+```typ
+error: assertion failed: invalid payload for Array[UInt]: (1, -2, 3)
+   ┌─ src/runtime.typ:53:2
+   │
+53 │ ╭   assert(
+54 │ │     payload_valid(ty, value),
+55 │ │     message: "invalid payload for " + display_type(ty) + ": " + repr(value),
+56 │ │   )
+   │ ╰───^
+
+  while calling `object` at dev.typ:25:28
+    object(apply_type(Array, UInt), vals)
+  while calling `unsigned_array` at demo.typ:26:1
+    unsigned_array((1, -2, 3))
+```
 
 ## Documentation
 
