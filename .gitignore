@@ -32,3 +32,8 @@ Icon
 *.vsix
 dist
 packages
+/*.pdf
+/*.typ
+/*.md
+!README.md
+.claude
